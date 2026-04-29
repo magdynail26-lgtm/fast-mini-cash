@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FAST MINI CASH</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Readex+Pro:wght@400;700&display=swap');
+        :root { --bg: #05060a; --cyan: #00f2ff; --orange: #ff4d00; --purple: #bc13fe; --border: rgba(255, 77, 0, 0.4); }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: #fff; font-family: 'Readex Pro', sans-serif; height: 100vh; overflow: hidden; }
+        .app-shell { width: 100%; height: 100vh; display: flex; flex-direction: column; background: radial-gradient(circle at top, #1a1033 0%, #05060a 90%); padding: 15px; box-sizing: border-box; position: relative; }
+        .brand-title { text-align: center; font-family: 'Orbitron', sans-serif; font-size: 16px; color: var(--cyan); margin-bottom: 15px; text-shadow: 0 0 10px var(--cyan); }
+        .hero-profile { display: flex; align-items: center; background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; }
+        .hero-img { width: 85px; height: 85px; border-radius: 50%; margin-left: 15px; border: 2px solid var(--orange); }
+        .hero-info h4 { margin: 0; font-size: 16px; }
+        .hero-info span { font-size: 12px; color: var(--orange); font-weight: bold; }
+        .balance-card { text-align: center; margin-bottom: 20px; }
+        .bal-num { font-family: 'Orbitron', sans-serif; font-size: 45px; font-weight: 900; color: #fff; }
+        .bal-text { font-size: 11px; color: #888; }
+        .grid-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; flex: 1; margin-bottom: 85px; }
+        .card-btn { background: rgba(255, 255, 255, 0.02); border: 2px solid var(--border); border-radius: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.1s; }
+        .card-btn i { font-size: 35px; margin-bottom: 10px; }
+        .card-btn span { font-weight: bold; font-size: 14px; }
+        .clr-o { color: var(--orange); }
+        .clr-p { color: var(--purple); }
+        .nav-dock { position: absolute; bottom: 15px; left: 15px; right: 15px; height: 70px; background: rgba(10, 10, 15, 0.98); border-radius: 25px; border: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
+        .tab-item { color: #444; display: flex; flex-direction: column; align-items: center; font-size: 11px; cursor: pointer; }
+        .tab-item.active { color: var(--orange); }
+        .overlay-page { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; flex-direction: column; padding: 25px; overflow-y: auto; }
+        .overlay-page.active { display: flex; }
+        .back-link { color: var(--orange); font-weight: bold; margin-bottom: 25px; cursor: pointer; }
+        .input-row { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 18px; margin-bottom: 12px; border: 1px solid var(--border); }
+        .input-row .head { display: flex; justify-content: space-between; align-items: center; }
+        .field { width: 100%; margin-top: 10px; padding: 12px; background: #000; border: 1px solid #333; color: var(--cyan); border-radius: 10px; display: none; outline: none; }
+        .field.show { display: block; }
+        .action-btn { background: var(--orange); border: none; color: #000; padding: 10px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .daily-box { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); border-radius: 20px; border: 1px dashed var(--orange); }
+        .claim-btn { background: var(--orange); border: none; color: #000; padding: 20px; border-radius: 15px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; }
+        .timer-text { font-family: 'Orbitron'; font-size: 28px; color: var(--cyan); margin-top: 15px; display: none; }
+    </style>
+</head>
+<body>
+<div class="app-shell">
+    <div class="brand-title">FAST MINI CASH</div>
+    <div class="hero-profile">
+        <img class="hero-img" src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Lucky" alt="Avatar">
+        <div class="hero-info">
+            <h4 id="user-display">مستخدم جديد 🔥</h4>
+            <span>ID: 7421085</span>
+        </div>
+    </div>
+    <div class="balance-card">
+        <div class="bal-num" id="main-balance">0.0000</div>
+        <div class="bal-text">إجمالي الأرباح ($)</div>
+    </div>
+    <div class="grid-actions">
+        <div class="card-btn clr-o" onclick="openView('tasks')"><i class="fas fa-gift"></i><span>هدية يومية</span></div>
+        <div class="card-btn clr-p" onclick="openView('wallet')"><i class="fas fa-wallet"></i><span>المحفظة</span></div>
+        <div class="card-btn clr-p" onclick="openView('friends')"><i class="fas fa-users"></i><span>الأصدقاء</span></div>
+        <div class="card-btn clr-o" onclick="openView('id-page')"><i class="fas fa-user-shield"></i><span>الهوية</span></div>
+    </div>
+    <div class="nav-dock">
+        <div class="tab-item" onclick="openView('id-page')"><i class="fas fa-id-card"></i><span>الهوية</span></div>
+        <div class="tab-item" onclick="openView('wallet')"><i class="fas fa-coins"></i><span>المحافظ</span></div>
+        <div class="tab-item" onclick="openView('tasks')"><i class="fas fa-star"></i><span>المهام</span></div>
+        <div class="tab-item active" onclick="closeViews()"><i class="fas fa-home"></i><span>الرئيسية</span></div>
+    </div>
+    <div id="tasks" class="overlay-page">
+        <span class="back-link" onclick="closeViews()">✕ رجوع</span>
+        <div class="daily-box">
+            <h2>المكافأة اليومية</h2>
+            <p>احصل على 0.0002$ كل 24 ساعة</p>
+            <button id="claimBtn" class="claim-btn" onclick="startDaily()">الحصول على الهدية 💰</button>
+            <div id="timerDisplay" class="timer-text">00:00:00</div>
+        </div>
+    </div>
+    <div id="wallet" class="overlay-page">
+        <span class="back-link" onclick="closeViews()">✕ رجوع</span>
+        <h2>المحافظ</h2>
+        <div class="input-row"><div class="head"><span>فودافون كاش</span><button class="action-btn" onclick="tglF('v')">ربط</button></div><input type="number" id="v" class="field" placeholder="010..."></div>
+        <div class="input-row"><div class="head"><span>Tonkeeper</span><button class="action-btn" onclick="tglF('t')">ربط</button></div><input type="text" id="t" class="field" placeholder="UQD..."></div>
+        <div class="input-row"><div class="head"><span>Binance Pay</span><button class="action-btn" onclick="tglF('b')">ربط</button></div><input type="text" id="b" class="field" placeholder="ID..."></div>
+    </div>
+    <div id="id-page" class="overlay-page">
+        <span class="back-link" onclick="closeViews()">✕ رجوع</span>
+        <h2>الهوية</h2>
+        <input type="text" id="nameInp" class="field show" placeholder="الاسم الجديد">
+        <button class="action-btn" style="width:100%; margin-top:15px;" onclick="saveN()">حفظ</button>
+    </div>
+    <div id="friends" class="overlay-page">
+        <span class="back-link" onclick="closeViews()">✕ رجوع</span>
+        <h2>دعوة الأصدقاء</h2>
+        <div class="input-row">
+            <input type="text" id="refLink" class="field show" value="https://t.me/FastMiniCashBot?start=7421085" readonly>
+            <button class="action-btn" style="width:100%; margin-top:15px;" onclick="copyRef()">نسخ رابط الإحالة</button>
+        </div>
+    </div>
+</div>
+<script>
+    let totalBalance = 0.0000;
+    let timerInterval;
+    function openView(id) { closeViews(); document.getElementById(id).classList.add('active'); }
+    function closeViews() { document.querySelectorAll('.overlay-page').forEach(p => p.classList.remove('active')); }
+    function tglF(id) { document.getElementById(id).classList.toggle('show'); }
+    function saveN() {
+        let n = document.getElementById('nameInp').value;
+        if(n) { document.getElementById('user-display').innerText = n + " 🔥"; closeViews(); }
+    }
+    function copyRef() {
+        let copyText = document.getElementById("refLink");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(copyText.value);
+        alert("تم نسخ الرابط بنجاح!");
+    }
+    function startDaily() {
+        totalBalance += 0.0002;
+        document.getElementById('main-balance').innerText = totalBalance.toFixed(4);
+        const btn = document.getElementById('claimBtn');
+        const timer = document.getElementById('timerDisplay');
+        btn.style.display = 'none';
+        timer.style.display = 'block';
+        let seconds = 24 * 3600;
+        timerInterval = setInterval(() => {
+            seconds--;
+            let h = Math.floor(seconds / 3600);
+            let m = Math.floor((seconds % 3600) / 60);
+            let s = seconds % 60;
+            timer.innerText = (h<10?"0"+h:h)+":"+(m<10?"0"+m:m)+":"+(s<10?"0"+s:s);
+            if (seconds <= 0) { clearInterval(timerInterval); btn.style.display = 'block'; timer.style.display = 'none'; }
+        }, 1000);
+    }
+</script>
+</body>
+</html>
