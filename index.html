@@ -3,133 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FAST MINI CASH</title>
+    <title>FAST MINI CASH - ULTIMATE 40</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Readex+Pro:wght@400;700&display=swap');
-        :root { --bg: #05060a; --cyan: #00f2ff; --orange: #ff4d00; --purple: #bc13fe; --border: rgba(255, 77, 0, 0.4); }
+        :root { --bg: #030408; --cyan: #00f2ff; --orange: #ff4d00; --purple: #bc13fe; --card-bg: rgba(255,255,255,0.05); }
         body, html { margin: 0; padding: 0; background: var(--bg); color: #fff; font-family: 'Readex Pro', sans-serif; height: 100vh; overflow: hidden; }
-        .app-shell { width: 100%; height: 100vh; display: flex; flex-direction: column; background: radial-gradient(circle at top, #1a1033 0%, #05060a 90%); padding: 15px; box-sizing: border-box; position: relative; }
-        .brand-title { text-align: center; font-family: 'Orbitron', sans-serif; font-size: 16px; color: var(--cyan); margin-bottom: 15px; text-shadow: 0 0 10px var(--cyan); }
-        .hero-profile { display: flex; align-items: center; background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; }
-        .hero-img { width: 85px; height: 85px; border-radius: 50%; margin-left: 15px; border: 2px solid var(--orange); }
-        .hero-info h4 { margin: 0; font-size: 16px; }
-        .hero-info span { font-size: 12px; color: var(--orange); font-weight: bold; }
-        .balance-card { text-align: center; margin-bottom: 20px; }
-        .bal-num { font-family: 'Orbitron', sans-serif; font-size: 45px; font-weight: 900; color: #fff; }
-        .bal-text { font-size: 11px; color: #888; }
-        .grid-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; flex: 1; margin-bottom: 85px; }
-        .card-btn { background: rgba(255, 255, 255, 0.02); border: 2px solid var(--border); border-radius: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.1s; }
-        .card-btn i { font-size: 35px; margin-bottom: 10px; }
-        .card-btn span { font-weight: bold; font-size: 14px; }
-        .clr-o { color: var(--orange); }
-        .clr-p { color: var(--purple); }
-        .nav-dock { position: absolute; bottom: 15px; left: 15px; right: 15px; height: 70px; background: rgba(10, 10, 15, 0.98); border-radius: 25px; border: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .tab-item { color: #444; display: flex; flex-direction: column; align-items: center; font-size: 11px; cursor: pointer; }
-        .tab-item.active { color: var(--orange); }
-        .overlay-page { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; flex-direction: column; padding: 25px; overflow-y: auto; }
-        .overlay-page.active { display: flex; }
-        .back-link { color: var(--orange); font-weight: bold; margin-bottom: 25px; cursor: pointer; }
-        .input-row { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 18px; margin-bottom: 12px; border: 1px solid var(--border); }
-        .input-row .head { display: flex; justify-content: space-between; align-items: center; }
-        .field { width: 100%; margin-top: 10px; padding: 12px; background: #000; border: 1px solid #333; color: var(--cyan); border-radius: 10px; display: none; outline: none; }
-        .field.show { display: block; }
-        .action-btn { background: var(--orange); border: none; color: #000; padding: 10px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; }
-        .daily-box { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.03); border-radius: 20px; border: 1px dashed var(--orange); }
-        .claim-btn { background: var(--orange); border: none; color: #000; padding: 20px; border-radius: 15px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; }
-        .timer-text { font-family: 'Orbitron'; font-size: 28px; color: var(--cyan); margin-top: 15px; display: none; }
+        
+        #onboarding { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 25px; }
+        .av-item { font-size: 50px; cursor: pointer; padding: 10px; border: 2px solid transparent; border-radius: 50%; transition: 0.3s; }
+        .av-item.selected { border-color: var(--cyan); box-shadow: 0 0 15px var(--cyan); }
+
+        .app-shell { width: 100%; height: 100vh; display: flex; flex-direction: column; padding: 15px; box-sizing: border-box; }
+        .bal-val { font-family: 'Orbitron'; font-size: 42px; font-weight: 900; color: #fff; text-align: center; margin: 10px 0; text-shadow: 0 0 15px var(--cyan); }
+        .grid-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 70px; }
+        .menu-item { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; height: 90px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
+
+        .overlay { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; flex-direction: column; padding: 25px; overflow-y: auto; }
+        .overlay.active { display: flex; }
+        .card { background: var(--card-bg); padding: 12px; border-radius: 20px; border: 1px solid var(--cyan); margin-bottom: 10px; }
+        
+        .claim-btn { background: var(--cyan); color: #000; border: none; height: 50px; border-radius: 12px; font-weight: 900; cursor: pointer; width: 100%; margin-top: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .claim-btn:disabled { background: #222 !important; color: #777 !important; cursor: not-allowed; border: 1px solid #333; }
+
+        .special-nav-btn { background: linear-gradient(145deg, #ff4d00, #ff8c00) !important; color: #fff !important; border: 1px solid #fff !important; animation: bounce-glow 2s infinite; }
+        @keyframes bounce-glow { 0%, 100% { transform: translateY(0); box-shadow: 0 0 5px var(--orange); } 50% { transform: translateY(-5px); box-shadow: 0 0 20px var(--orange); } }
+
+        .nav-bar { position: absolute; bottom: 15px; left: 15px; right: 15px; height: 70px; background: rgba(10,10,15,0.95); border-radius: 20px; border: 1px solid var(--purple); display: flex; justify-content: space-around; align-items: center; }
+        .nav-btn { color: #555; text-align: center; font-size: 10px; cursor: pointer; transition: 0.3s; }
+        .nav-btn.active { color: var(--cyan); }
+        input, select { width: 100%; padding: 12px; background: #000; border: 1px solid var(--purple); border-radius: 10px; color: #fff; text-align: center; margin-bottom: 10px; box-sizing: border-box; }
     </style>
 </head>
 <body>
-<div class="app-shell">
-    <div class="brand-title">FAST MINI CASH</div>
-    <div class="hero-profile">
-        <img class="hero-img" src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Lucky" alt="Avatar">
-        <div class="hero-info">
-            <h4 id="user-display">مستخدم جديد 🔥</h4>
-            <span>ID: 7421085</span>
+
+<div id="onboarding">
+    <div style="background:var(--card-bg); padding:30px; border-radius:30px; border:1px solid var(--cyan); width: 85%;">
+        <h2 style="font-family:'Orbitron'; color:var(--cyan)">FAST MINI CASH</h2>
+        <div style="display:flex; gap:20px; justify-content:center; margin:20px 0;">
+            <div id="reg-av1" class="av-item" onclick="selectAv('👦', 'reg-av1')">👦</div>
+            <div id="reg-av2" class="av-item" onclick="selectAv('👧', 'reg-av2')">👧</div>
         </div>
-    </div>
-    <div class="balance-card">
-        <div class="bal-num" id="main-balance">0.0000</div>
-        <div class="bal-text">إجمالي الأرباح ($)</div>
-    </div>
-    <div class="grid-actions">
-        <div class="card-btn clr-o" onclick="openView('tasks')"><i class="fas fa-gift"></i><span>هدية يومية</span></div>
-        <div class="card-btn clr-p" onclick="openView('wallet')"><i class="fas fa-wallet"></i><span>المحفظة</span></div>
-        <div class="card-btn clr-p" onclick="openView('friends')"><i class="fas fa-users"></i><span>الأصدقاء</span></div>
-        <div class="card-btn clr-o" onclick="openView('id-page')"><i class="fas fa-user-shield"></i><span>الهوية</span></div>
-    </div>
-    <div class="nav-dock">
-        <div class="tab-item" onclick="openView('id-page')"><i class="fas fa-id-card"></i><span>الهوية</span></div>
-        <div class="tab-item" onclick="openView('wallet')"><i class="fas fa-coins"></i><span>المحافظ</span></div>
-        <div class="tab-item" onclick="openView('tasks')"><i class="fas fa-star"></i><span>المهام</span></div>
-        <div class="tab-item active" onclick="closeViews()"><i class="fas fa-home"></i><span>الرئيسية</span></div>
-    </div>
-    <div id="tasks" class="overlay-page">
-        <span class="back-link" onclick="closeViews()">✕ رجوع</span>
-        <div class="daily-box">
-            <h2>المكافأة اليومية</h2>
-            <p>احصل على 0.0002$ كل 24 ساعة</p>
-            <button id="claimBtn" class="claim-btn" onclick="startDaily()">الحصول على الهدية 💰</button>
-            <div id="timerDisplay" class="timer-text">00:00:00</div>
-        </div>
-    </div>
-    <div id="wallet" class="overlay-page">
-        <span class="back-link" onclick="closeViews()">✕ رجوع</span>
-        <h2>المحافظ</h2>
-        <div class="input-row"><div class="head"><span>فودافون كاش</span><button class="action-btn" onclick="tglF('v')">ربط</button></div><input type="number" id="v" class="field" placeholder="010..."></div>
-        <div class="input-row"><div class="head"><span>Tonkeeper</span><button class="action-btn" onclick="tglF('t')">ربط</button></div><input type="text" id="t" class="field" placeholder="UQD..."></div>
-        <div class="input-row"><div class="head"><span>Binance Pay</span><button class="action-btn" onclick="tglF('b')">ربط</button></div><input type="text" id="b" class="field" placeholder="ID..."></div>
-    </div>
-    <div id="id-page" class="overlay-page">
-        <span class="back-link" onclick="closeViews()">✕ رجوع</span>
-        <h2>الهوية</h2>
-        <input type="text" id="nameInp" class="field show" placeholder="الاسم الجديد">
-        <button class="action-btn" style="width:100%; margin-top:15px;" onclick="saveN()">حفظ</button>
-    </div>
-    <div id="friends" class="overlay-page">
-        <span class="back-link" onclick="closeViews()">✕ رجوع</span>
-        <h2>دعوة الأصدقاء</h2>
-        <div class="input-row">
-            <input type="text" id="refLink" class="field show" value="https://t.me/FastMiniCashBot?start=7421085" readonly>
-            <button class="action-btn" style="width:100%; margin-top:15px;" onclick="copyRef()">نسخ رابط الإحالة</button>
-        </div>
+        <input type="text" id="nameIn" placeholder="اسمك المستعار">
+        <button class="claim-btn" onclick="finishReg()">ابدأ الربح (+50 FMC)</button>
     </div>
 </div>
+
+<div class="app-shell">
+    <div style="display:flex; justify-content:space-between; align-items:center; background:var(--card-bg); padding:10px 15px; border-radius:15px;">
+        <div style="display:flex; align-items:center; gap:8px;" onclick="openP('profile')">
+            <span id="pfpDisplay">👤</span> <b id="uName">المستخدم</b>
+        </div>
+        <div style="color:var(--cyan); font-size:10px; font-weight:bold;">PRO MAX 40</div>
+    </div>
+
+    <div class="bal-val" id="mainBal">0.00</div>
+    <div style="text-align:center; color:var(--cyan); font-size:10px; margin-top:-10px;">FMC BALANCE</div>
+
+    <div class="grid-menu">
+        <div class="menu-item" onclick="openP('tasks')"><i class="fas fa-bolt" style="color:var(--orange)"></i><span>40 مهمة</span></div>
+        <div class="menu-item" onclick="openP('friends')"><i class="fas fa-users" style="color:var(--cyan)"></i><span>الأصدقاء</span></div>
+        <div class="menu-item" onclick="openP('profile')"><i class="fas fa-user-cog" style="color:var(--cyan)"></i><span>الحساب</span></div>
+        <div class="menu-item" onclick="openP('wallet')"><i class="fas fa-wallet" style="color:var(--purple)"></i><span>السحب</span></div>
+    </div>
+    
+    <button class="claim-btn" id="dailyBtn" onclick="claimDaily()"><i class="fas fa-gift"></i> الهدية اليومية (50 FMC)</button>
+
+    <div class="nav-bar">
+        <div class="nav-btn active" id="btn-home" onclick="closeP()"><i class="fas fa-home"></i><br>الرئيسية</div>
+        <div class="nav-btn" onclick="openP('tasks')"><i class="fas fa-tasks"></i><br>المهام</div>
+        <div class="nav-btn special-nav-btn" style="border-radius:15px; padding:5px 10px;" onclick="openP('offers')"><i class="fas fa-bolt"></i><br>عروض مميزة</div>
+    </div>
+</div>
+
+<div id="tasks" class="overlay">
+    <div onclick="closeP()" style="color:var(--orange); cursor:pointer; margin-bottom:20px;">✕ إغلاق</div>
+    <h2 style="color:var(--cyan)">40 مهمة ربح مباشر ⚡</h2>
+    <div id="taskList"></div>
+</div>
+
+<div id="friends" class="overlay">
+    <div onclick="closeP()" style="color:var(--orange); cursor:pointer; margin-bottom:20px;">✕ إغلاق</div>
+    <h2 style="color:var(--cyan)">نظام الإحالة 🔗</h2>
+    <div class="card" style="text-align:center;">
+        <input type="text" id="referralLink" readonly style="background:#111; color:var(--cyan);">
+        <button class="claim-btn" onclick="copyRef()">نسخ الرابط</button>
+    </div>
+    <div id="referralGifts"></div>
+</div>
+
+<div id="wallet" class="overlay">
+    <div onclick="closeP()" style="color:var(--orange); cursor:pointer; margin-bottom:20px;">✕ رجوع</div>
+    <h2>سحب الأرباح 💳</h2>
+    <div class="card" style="text-align:center;">
+        <div id="wUSD" style="font-size:35px; color:var(--cyan); font-family:'Orbitron'">0.00$</div>
+        <p>10,000 FMC = 5$</p>
+    </div>
+    <select id="withdrawMethod">
+        <option>Vodafone Cash</option>
+        <option>Binance (USDT)</option>
+        <option>OKX Exchange</option>
+        <option>Tonkeeper (TON)</option>
+    </select>
+    <input type="text" id="walletAddress" placeholder="الرقم أو عنوان المحفظة">
+    <button class="claim-btn" style="background:var(--orange); color:#fff;" onclick="processWithdraw()">تأكيد السحب</button>
+</div>
+
+<div id="profile" class="overlay">
+    <div onclick="closeP()" style="color:var(--orange); cursor:pointer; margin-bottom:20px;">✕ رجوع</div>
+    <div class="card"><p>تغيير الاسم:</p><input type="text" id="newNameIn" placeholder="الاسم الجديد"><p id="nameCostText"></p><button class="claim-btn" onclick="updateName()">تحديث</button></div>
+</div>
+
+<div id="offers" class="overlay">
+    <div onclick="closeP()" style="color:var(--orange); cursor:pointer; margin-bottom:20px;">✕ إغلاق</div>
+    <div style="text-align:center; margin-top:80px;">
+        <i class="fas fa-bolt" style="font-size:80px; color:var(--orange); text-shadow:0 0 20px var(--orange);"></i>
+        <h2 style="color:var(--orange); font-family:'Orbitron'">COMING SOON</h2>
+        <p>عروض حصرية قريباً</p>
+    </div>
+</div>
+
 <script>
-    let totalBalance = 0.0000;
-    let timerInterval;
-    function openView(id) { closeViews(); document.getElementById(id).classList.add('active'); }
-    function closeViews() { document.querySelectorAll('.overlay-page').forEach(p => p.classList.remove('active')); }
-    function tglF(id) { document.getElementById(id).classList.toggle('show'); }
-    function saveN() {
-        let n = document.getElementById('nameInp').value;
-        if(n) { document.getElementById('user-display').innerText = n + " 🔥"; closeViews(); }
+    if(!localStorage.getItem('ultimate_40_final')) {
+        localStorage.clear();
+        localStorage.setItem('ultimate_40_final', 'true');
     }
-    function copyRef() {
-        let copyText = document.getElementById("refLink");
-        copyText.select();
-        copyText.setSelectionRange(0, 99999);
-        navigator.clipboard.writeText(copyText.value);
-        alert("تم نسخ الرابط بنجاح!");
+
+    let balance = parseFloat(localStorage.getItem('fmc_bal')) || 0;
+    let nChangeCount = parseInt(localStorage.getItem('n_change_count')) || 0;
+    let fCount = parseInt(localStorage.getItem('friend_count')) || 0; 
+    let selAv = '';
+
+    const LINKS = [
+        "https://prouvostone.com/v8t4k0id?key=253c3017a41da1b82d4957e8be238718","https://prouvostone.com/t8fshb829?key=e03884393ce0d2e5b98f2604d7c8651c","https://prouvostone.com/f9m40m56?key=6df7e034458f4a13809618c6444dae80","https://prouvostone.com/u7f34g1x?key=f9984956d4001a1c97a552277494f6c4","https://prouvostone.com/v19b266x?key=3c96033325605d518062ec7f7fc7f7f7","https://www.profitablecpmratenetwork.com/q1ndcymg4?key=e2da8affe2126c9646cfd92d5399144e","https://www.profitablecpmratenetwork.com/a0fibird?key=5720cf96040d59d9c1fa9a2c28c4a896","https://www.profitablecpmratenetwork.com/uvf94uj9vs?key=84590c9feafb4e1a50430f29e500ebf0","https://www.profitablecpmratenetwork.com/agxtiqc4?key=9496dc4bfd10ae5ff358ab61066b0fd6","https://www.profitablecpmratenetwork.com/fk73xdcqe?key=ca070a5c5c4bedfed91fc18cbb26b98b","https://www.profitablecpmratenetwork.com/jv95raumn?key=6220e60387d969d0402f97cee0e956be","https://www.profitablecpmratenetwork.com/yc6ebb7q9y?key=34a439d6972f1e2e143a21ce9d01b17a","https://www.profitablecpmratenetwork.com/wsw1b4brk?key=3a1b1f6a699564521e07be8fa71d043a","https://www.profitablecpmratenetwork.com/dh9raayz6z?key=a798eb0b99d37d4fe40f97b4636da5fe","https://www.profitablecpmratenetwork.com/ggxe355pu?key=eeceb0f369768b86d368dbe21f9100a5","https://www.profitablecpmratenetwork.com/kcemjerw8f?key=16fc0596009733fe76dba9b733291fd3","https://www.profitablecpmratenetwork.com/kyr1v2g7hw?key=40e9781f70cbb00874d62c745918d91c","https://www.profitablecpmratenetwork.com/w9wurq4w?key=e22e2b395c3f0f66a9e288101aaafdf9","https://www.profitablecpmratenetwork.com/ws35gdiq?key=09d00d60dc52565b4e709fca76389cd5","https://www.profitablecpmratenetwork.com/hdkw1ik8u?key=e9a7feb749a12aecc4ffb4138ea0ba65","https://www.profitablecpmratenetwork.com/vxw350mn3?key=8283d6e685433edd2943afbeddc01c6d","https://www.profitablecpmratenetwork.com/aym5pmb7z?key=4568c566fa5008ea6a3851841b0966c9","https://www.profitablecpmratenetwork.com/g102weqb?key=a2aaa8bebe607905591363a663ea7c86","https://www.profitablecpmratenetwork.com/w6vv81h52a?key=3fa0c8098edb644d9f6b6d297afa94b6","https://www.profitablecpmratenetwork.com/bswbnbun?key=f71b78a1caca6092a6d80ab0a30e6111","https://www.profitablecpmratenetwork.com/hxhsr291?key=7884f84ba3ac418cc40b3051a3980e97","https://www.profitablecpmratenetwork.com/wqsxdwcvn?key=8b6cc34dd18715b3c5664b62d8f0c207","https://www.profitablecpmratenetwork.com/ctjivet2uv?key=86711e3ff72ad5837294a463c085e14d","https://www.profitablecpmratenetwork.com/jd1y2hhtr?key=dfe8fe1bba4c6e4662a25fd5e58f3e91","https://www.profitablecpmratenetwork.com/p6027ken3?key=9d3b5295de8cd83c6b323bec7832e892","https://www.profitablecpmratenetwork.com/qu3egw9b?key=7ad94ae8c1d257168acb00ee6347cbda","https://www.profitablecpmratenetwork.com/fbd000r48?key=18ba8834663912fff3ff2611a366230b","https://www.profitablecpmratenetwork.com/gfqeyr4u?key=bb7f1c00a6430b24df18d1515c08ad0b","https://www.profitablecpmratenetwork.com/sigh3ubgre?key=ee957ba954427c83d084cfd8304e93f3","https://www.profitablecpmratenetwork.com/kix9iqqgh?key=137d3bbdb3c98ac38f4176d8af0e1206","https://www.profitablecpmratenetwork.com/fqijc2pc?key=b16cb0e8d223c52ec856ef8118e88c6b","https://www.profitablecpmratenetwork.com/we8tccn0?key=262f5614470c2523514c7c77ce0ddd2f","https://www.profitablecpmratenetwork.com/ucmgi2srb?key=1a114311124f887a5c703f8c45940394",
+        "رابط_39_هنا", "رابط_40_هنا"
+    ];
+
+    window.onload = function() {
+        if(!localStorage.getItem('is_reg')) { document.getElementById('onboarding').style.display = 'flex'; }
+        else { loadProfile(); }
+        renderTasks(); updateUI(); setInterval(globalTimer, 1000); generateRefLink(); renderFriendGifts();
+    };
+
+    function selectAv(e, id) { selAv = e; document.querySelectorAll('.av-item').forEach(i => i.classList.remove('selected')); document.getElementById(id).classList.add('selected'); }
+    function finishReg() {
+        let n = document.getElementById('nameIn').value.trim(); if(!n || !selAv) return alert("أكمل البيانات!");
+        balance = 50; localStorage.setItem('fmc_bal', balance); localStorage.setItem('u_name', n);
+        localStorage.setItem('u_av', selAv); localStorage.setItem('is_reg', 'true');
+        document.getElementById('onboarding').style.display = 'none'; loadProfile(); updateUI(); generateRefLink();
     }
-    function startDaily() {
-        totalBalance += 0.0002;
-        document.getElementById('main-balance').innerText = totalBalance.toFixed(4);
-        const btn = document.getElementById('claimBtn');
-        const timer = document.getElementById('timerDisplay');
-        btn.style.display = 'none';
-        timer.style.display = 'block';
-        let seconds = 24 * 3600;
-        timerInterval = setInterval(() => {
-            seconds--;
-            let h = Math.floor(seconds / 3600);
-            let m = Math.floor((seconds % 3600) / 60);
-            let s = seconds % 60;
-            timer.innerText = (h<10?"0"+h:h)+":"+(m<10?"0"+m:m)+":"+(s<10?"0"+s:s);
-            if (seconds <= 0) { clearInterval(timerInterval); btn.style.display = 'block'; timer.style.display = 'none'; }
+
+    function globalTimer() {
+        let now = new Date().getTime();
+        let lastDaily = localStorage.getItem('last_d');
+        if(lastDaily) {
+            let diff = now - lastDaily;
+            let btn = document.getElementById('dailyBtn');
+            if(diff < 86400000) {
+                let rem = 86400000 - diff;
+                let h = Math.floor(rem / 3600000); let m = Math.floor((rem % 3600000) / 60000); let s = Math.floor((rem % 60000) / 1000);
+                btn.disabled = true; btn.innerHTML = `<i class="fas fa-clock"></i> القادم: ${h}:${m}:${s}`;
+            } else { btn.disabled = false; btn.innerHTML = `<i class="fas fa-gift"></i> الهدية اليومية (50 FMC)`; }
+        }
+        for(let i=1; i<=LINKS.length; i++){
+            let lastTask = localStorage.getItem('task'+i+'_time'); let btn = document.getElementById('task'+i+'-btn');
+            if(lastTask && btn) {
+                let diffT = now - lastTask;
+                if(diffT < 3 * 3600000) {
+                    let remT = (3 * 3600000) - diffT;
+                    let hh = Math.floor(remT / 3600000); let mm = Math.floor((remT % 3600000) / 60000); let ss = Math.floor((remT % 60000) / 1000);
+                    btn.disabled = true; btn.innerText = `مغلق: ${hh}:${mm}:${ss}`;
+                } else { btn.disabled = false; if(!btn.getAttribute('data-waiting')) btn.innerText = "تنفيذ المهمة"; }
+            }
+        }
+    }
+
+    function renderTasks() {
+        let h = ''; LINKS.forEach((l, i) => { h += `<div class="card"><b>FMC Direct ${i+1}</b><br><small>+20 FMC | 60 ثانية</small><button id="task${i+1}-btn" class="claim-btn" onclick="startTask('task${i+1}', 20, '${l}')">تنفيذ المهمة</button></div>`; });
+        document.getElementById('taskList').innerHTML = h;
+    }
+
+    function startTask(id, amt, url) {
+        let btn = document.getElementById(id + '-btn'); window.open(url, '_blank'); btn.setAttribute('data-waiting', 'true');
+        let s = 60; btn.disabled = true;
+        let clock = setInterval(() => {
+            btn.innerText = "انتظر: " + s + " ث"; s--;
+            if(s < 0) {
+                clearInterval(clock); btn.innerText = "تجميع العملات ✅"; btn.disabled = false; btn.style.background = "var(--orange)"; btn.style.color = "#fff";
+                btn.onclick = () => { balance += amt; localStorage.setItem('fmc_bal', balance); localStorage.setItem(id + '_time', new Date().getTime()); btn.removeAttribute('data-waiting'); updateUI(); alert("تم الإضافة!"); location.reload(); };
+            }
         }, 1000);
+    }
+
+    function renderFriendGifts() {
+        const gifts = [{t:3, a:200}, {t:5, a:300}, {t:15, a:500}, {t:25, a:800}];
+        let html = '';
+        gifts.forEach(g => {
+            let isClaimed = localStorage.getItem('gift'+g.t);
+            html += `<div class="card"><b>دعوة ${g.t} أصدقاء</b><button id="gift${g.t}-btn" class="claim-btn" onclick="claimFriendGift(${g.t}, ${g.a})" ${fCount >= g.t && !isClaimed ? '' : 'disabled'}>${isClaimed ? 'تم الاستلام ✅' : 'استلام ' + g.a + ' FMC'}</button></div>`;
+        });
+        document.getElementById('referralGifts').innerHTML = html;
+    }
+
+    function claimFriendGift(target, amt) { balance += amt; localStorage.setItem('fmc_bal', balance); localStorage.setItem('gift' + target, 'true'); updateUI(); alert("🎉 مبروك!"); location.reload(); }
+    
+    function processWithdraw() {
+        let addr = document.getElementById('walletAddress').value.trim();
+        if(balance < 10000) return alert("الحد الأدنى للسحب هو 10,000 FMC (5$)");
+        if(!addr) return alert("أدخل رقم المحفظة!");
+        alert("تم تأكيد طلب السحب بنجاح!\nسيتم التحويل خلال 7-10 أيام عمل.");
+        balance = 0; localStorage.setItem('fmc_bal', balance); updateUI(); closeP();
+    }
+
+    function updateUI() { 
+        document.getElementById('mainBal').innerText = balance.toFixed(2); 
+        document.getElementById('wUSD').innerText = ((balance / 10000) * 5).toFixed(2) + "$"; 
+    }
+    function copyRef() { let c = document.getElementById("referralLink"); c.select(); document.execCommand("copy"); alert("تم النسخ!"); }
+    function openP(id) { document.querySelectorAll('.overlay').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+    function closeP() { document.querySelectorAll('.overlay').forEach(p => p.classList.remove('active')); }
+    function loadProfile() { document.getElementById('uName').innerText = localStorage.getItem('u_name'); document.getElementById('pfpDisplay').innerText = localStorage.getItem('u_av'); let cost = (nChangeCount + 1) * 50; document.getElementById('nameCostText').innerText = "التكلفة: " + cost + " FMC"; }
+    function generateRefLink() { let n = localStorage.getItem('u_name') || "user"; document.getElementById('referralLink').value = window.location.origin + window.location.pathname + "?ref=" + encodeURIComponent(n); }
+    function claimDaily() { balance += 50; localStorage.setItem('fmc_bal', balance); localStorage.setItem('last_d', new Date().getTime()); updateUI(); alert("🎁 مبروك!"); }
+    function updateName() {
+        let newN = document.getElementById('newNameIn').value; let cost = (nChangeCount + 1) * 50;
+        if(balance < cost) return alert("رصيدك لا يكفي!");
+        balance -= cost; nChangeCount++; localStorage.setItem('fmc_bal', balance); localStorage.setItem('u_name', newN); localStorage.setItem('n_change_count', nChangeCount);
+        loadProfile(); updateUI(); generateRefLink(); alert("تم!");
     }
 </script>
 </body>
