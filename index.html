@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>FMC ECOSYSTEM - VIP PREMIUM FORCE</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root { --p: #7c3aed; --c: #00f2ff; --g: #39ff14; --gold: #ffd700; --red: #ff0055; --bg: #02000f; --ton: #0088cc; --card-bg: rgba(10, 6, 36, 0.6); }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; margin: 0; padding: 0; touch-action: manipulation; }
+        
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; user-select: none; -webkit-user-select: none; }
+        
+        header { 
+            height: 70px; background: rgba(2, 0, 15, 0.95); border-bottom: 1px solid rgba(0, 242, 255, 0.2); 
+            display: flex; justify-content: space-between; align-items: center; padding: 0 15px; z-index: 999999 !important; position: relative;
+        }
+        .header-stats { display: flex; gap: 12px; align-items: center; }
+        .stat-v { text-align: center; }
+        .stat-v span { display: block; font-size: 10px; color: var(--c); font-weight: 900; }
+        .stat-v b { font-size: 14px; }
+        
+        .header-actions { display: flex; gap: 8px; align-items: center; position: relative; z-index: 999999 !important; }
+        .btn-lang-globe { background: rgba(0, 242, 255, 0.1); border: 1px solid rgba(0, 242, 255, 0.4); width: 38px; height: 38px; border-radius: 10px; color: var(--c); display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; }
+        
+        .lang-dropdown { display: none; flex-direction: column; position: absolute; top: 55px; left: 0; background: rgba(5, 2, 25, 0.98); border: 1px solid var(--c); border-radius: 14px; padding: 6px; gap: 4px; z-index: 10000000 !important; box-shadow: 0 4px 25px rgba(0,242,255,0.3); max-height: 260px; overflow-y: auto; width: 140px; }
+        .dropdown-item { padding: 8px 10px; font-size: 11px; font-weight: 900; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 6px; border-radius: 8px; }
+        .dropdown-item:hover { background: linear-gradient(135deg, var(--p), #1e1b4b); color: var(--c); }
+
+        .btn-connect { background: linear-gradient(135deg, #0088cc, #0077b5); border: 1px solid rgba(0,242,255,0.3); padding: 8px 12px; border-radius: 10px; color: white; font-size: 11px; font-weight: 900; cursor: pointer; }
+        .btn-connect.connected { background: linear-gradient(135deg, var(--g), #16a34a); border-color: rgba(57,255,20,0.4); color: #000 !important; }
+
+        .main-container { flex: 1; position: relative; width: 100%; overflow: hidden; z-index: 10; }
+        .page-room { position: absolute; inset: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 18px; background: var(--bg); z-index: 20; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .page-room.active { display: flex; }
+
+        .card { background: var(--card-bg); border: 1px solid rgba(0, 242, 255, 0.15); border-radius: 24px; padding: 18px; margin-bottom: 15px; backdrop-filter: blur(10px); }
+
+        .clicker-layout { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 25px 0 15px 0; background: radial-gradient(circle at center, rgba(0,242,255,0.06) 0%, transparent 70%); border-radius: 32px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.02); }
+        .gift-box-badge { position: absolute; top: 15px; right: 20px; width: 48px; height: 48px; background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.4); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; box-shadow: 0 0 15px rgba(255,215,0,0.2); z-index: 99; }
+
+        .daily-modal { display: none; flex-direction: column; background: rgba(5, 2, 25, 0.98); border: 2px solid var(--gold); border-radius: 24px; padding: 15px; margin-bottom: 15px; width: 100%; }
+        .daily-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 12px; width: 100%; }
+        .daily-day-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 8px 2px; border-radius: 12px; text-align: center; font-size: 10px; font-weight: 900; color: #aaa; cursor: pointer; min-height: 55px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .daily-day-box.active-day { border-color: var(--gold); background: rgba(255,215,0,0.15); color: var(--gold); }
+        .daily-day-box.claimed { border-color: var(--g) !important; background: rgba(57,255,20,0.1) !important; color: var(--g) !important; cursor: default; }
+
+        .card-shop-box { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 15px; width: 100%; }
+        .shop-card-item { background: rgba(255,255,255,0.02); border: 1px solid rgba(0, 242, 255, 0.12); border-radius: 16px; padding: 10px 4px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; align-items: center; min-height: 125px; }
+        .shop-card-item h5 { font-size: 11px; color: #fff; font-weight: 900; }
+        .shop-card-item span { font-size: 9px; color: var(--gold); display: block; margin: 2px 0; font-weight: bold; }
+        .btn-buy-card-coin { width: 100%; height: 26px; border-radius: 6px; background: var(--p); border: none; color: #fff; font-size: 9px; font-weight: 900; cursor: pointer; margin-top: auto; }
+        .btn-buy-card-ton { width: 100%; height: 26px; border-radius: 6px; background: linear-gradient(135deg, #0088cc, #006699); border: none; color: #fff; font-size: 9px; font-weight: 900; cursor: pointer; margin-top: 4px; }
+
+        .farm-card-box { display: flex; flex-direction: column; gap: 8px; }
+        .farm-card-mini { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: var(--card-bg); border: 1px solid rgba(188,19,254,0.2); border-radius: 20px; }
+        .farm-info h4 { color: #fff; font-size: 14px; font-weight: 900; }
+        .farm-info p { color: #94a3b8; font-size: 11px; margin-top: 3px; }
+        .btn-buy-ton { padding: 8px 16px; background: linear-gradient(180deg, #0088cc, #006699); border: none; border-radius: 12px; color: white; font-weight: 900; font-size: 12px; cursor: pointer; }
+        .btn-buy-ton.active-upgrade { background: linear-gradient(180deg, var(--g), #16a34a) !important; color: #000 !important; cursor: default; }
+
+        .arcade-headline { font-size: 16px; font-weight: 900; color: var(--c); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .arcade-game-card { background: linear-gradient(145deg, rgba(15, 10, 45, 0.6), rgba(2, 1, 12, 0.95)); border: 1px solid rgba(0, 242, 255, 0.2); border-radius: 24px; padding: 18px; margin-bottom: 15px; display: flex; flex-direction: column; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .arcade-card-top { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .arcade-icon-box { width: 55px; height: 55px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; }
+        .arcade-info-text h3 { font-size: 15px; font-weight: 900; color: #fff; }
+        .arcade-info-text p { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+        .btn-arcade-play { width: 100%; height: 44px; border-radius: 12px; border: none; background: linear-gradient(180deg, #1f2937, #111827); border: 1px solid rgba(255,255,255,0.05); color: #fff; font-weight: 900; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+        .slot-housing { background: linear-gradient(145deg, #120734, #050114); border: 3px solid #250e55; border-radius: 24px; padding: 12px; position: relative; }
+        .grid-container-relative { position: relative; width: 100%; }
+        .grid-3x3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; background: #000; padding: 8px; border-radius: 16px; border: 1px solid var(--p); position: relative; }
+        .grid-cell { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); height: 75px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold; position: relative; z-index: 5; overflow: hidden; }
+        .blur-spin { animation: cssSpin 0.1s infinite linear; }
+        @keyframes cssSpin { 0% { transform: translateY(-3px); filter: blur(2px); } 100% { transform: translateY(3px); filter: blur(2px); } }
+        #slot-canvas { position: absolute; inset: 0; z-index: 99; pointer-events: none; width: 100%; height: 100%; }
+        
+        .history-bar { display: flex; gap: 6px; overflow-x: auto; padding: 6px; background: rgba(0,0,0,0.4); border-radius: 12px; border: 1px solid #111; margin-top: 8px; min-height: 44px; align-items: center; white-space: nowrap !important; width: 100%; overflow-y: hidden !important; -webkit-overflow-scrolling: touch; }
+        .hist-chip { padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 900; background: rgba(255,255,255,0.05); color: #aaa; display: inline-block !important; flex-shrink: 0 !important; }
+        .hist-chip.win { background: rgba(57,255,20,0.15); color: var(--g); border: 1px solid rgba(57,255,20,0.3); }
+
+        /* 👑 واجهة لعبة FMC LUCKY الاحترافية المحدثة بالكامل بأنيميشن عائم */
+        .lucky-header-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+        .lucky-card-panel { background: rgba(10, 6, 36, 0.7); border: 1px solid rgba(0, 242, 255, 0.15); border-radius: 12px; padding: 8px; text-align: center; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        .lucky-card-panel span { display: block; font-size: 9px; color: #94a3b8; font-weight: 900; margin-bottom: 2px; }
+        .lucky-card-panel b { font-size: 14px; }
+        
+        .lucky-arena-frame { position: relative; width: 290px; height: 290px; margin: 15px auto; display: flex; justify-content: center; align-items: center; }
+        .lucky-center-disc { width: 90px; height: 90px; border-radius: 50%; border: 2px solid var(--c); background: #02000f; box-shadow: 0 0 20px rgba(0,242,255,0.4); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-weight: 900; font-size: 11px; color: var(--c); z-index: 10; letter-spacing: 1px; animation: glowPulse 2s infinite alternate; }
+        @keyframes glowPulse { from { box-shadow: 0 0 10px rgba(0,242,255,0.3); } to { box-shadow: 0 0 25px rgba(0,242,255,0.7); } }
+        
+        /* تأثير الأنيميشن العائم الاحترافي المتناسق */
+        .lucky-item-node { position: absolute; width: 54px; height: 54px; background: #ffffff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.6); border: 3px solid #222; cursor: pointer; transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s; z-index: 5; animation: floatEffect 3s infinite ease-in-out; }
+        @keyframes floatEffect {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        .lucky-item-node.bet-placed { border-color: var(--gold) !important; box-shadow: 0 0 15px var(--gold) !important; }
+        .lucky-item-node.blitz-winner { border-color: var(--g) !important; background: #e8ffe8 !important; box-shadow: 0 0 25px var(--g) !important; z-index: 20; animation: winFlash 0.2s infinite alternate !important; }
+        @keyframes winFlash { from { filter: brightness(1); transform: scale(1.1); } to { filter: brightness(1.3); transform: scale(1.1); } }
+        
+        .lucky-item-node .x-badge { position: absolute; bottom: -6px; background: var(--gold); color: #000; font-size: 8px; font-weight: 900; padding: 1px 5px; border-radius: 6px; border: 1px solid #000; font-family: sans-serif; }
+        .lucky-item-node .bet-counter { position: absolute; top: -6px; right: -6px; background: var(--red); color: #fff; font-size: 8px; font-weight: bold; padding: 1px 4px; border-radius: 5px; border: 1px solid #fff; display: none; box-shadow: 0 0 8px var(--red); }
+
+        .lucky-chips-row { display: flex; justify-content: center; gap: 4px; margin-top: 10px; margin-bottom: 10px; width: 100%; }
+        .chip-btn { background: #05021a; border: 1px solid #333; color: #94a3b8; padding: 8px 0; width: 15%; border-radius: 8px; font-weight: 900; font-size: 11px; cursor: pointer; transition: all 0.2s ease; text-align: center; }
+        .chip-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(255,215,0,0.1); box-shadow: 0 0 12px rgba(255,215,0,0.2); transform: scale(1.05); }
+        .chip-btn.custom-type { width: 22%; color: #bc13fe; border-color: #bc13fe; }
+        .chip-btn.custom-type.active { background: rgba(188,19,254,0.1); box-shadow: 0 0 12px rgba(188,19,254,0.3); }
+
+        .lucky-input-panel { display: none; align-items: center; justify-content: center; gap: 8px; margin: 10px 0; animation: fadeReveal 0.3s ease; }
+        @keyframes fadeReveal { from { opacity:0; transform:translateY(-5px); } to { opacity:1; transform:translateY(0); } }
+        .lucky-field { background: #000 !important; border: 1px solid #bc13fe !important; color: #bc13fe !important; padding: 0 10px; height: 36px; border-radius: 8px; font-weight: 900; text-align: center; width: 120px; box-shadow: inset 0 0 8px rgba(188,19,254,0.2); }
+        .lucky-field-btn { background: #bc13fe; border: none; color: white; height: 36px; padding: 0 15px; border-radius: 8px; font-weight: 900; cursor: pointer; box-shadow: 0 0 10px rgba(188,19,254,0.4); }
+
+        /* 🎬 شاشة الصاروخ السينمائية التفاعلية المتسارعة الحركة */
+        .sky { height: calc(100vh - 255px); max-height: 62vh; border-radius: 25px; position: relative; overflow: hidden; border: 2px solid var(--c); box-shadow: inset 0 0 45px rgba(0,242,255,0.3); margin-bottom: 5px; background: #000; }
+        .cyber-city { position: absolute; inset: 0; width: 100%; height: 100%; background-image: url('https://images.unsplash.com/photo-1519501025264-65ba15a82390?q=80&w=600&auto=format&fit=crop'); background-repeat: repeat-y; background-size: cover; background-position: center bottom; filter: brightness(0.5) contrast(1.2); }
+        #rocket-container { position: absolute; bottom: 40px; left: calc(50% - 30px); width: 60px; height: 110px; z-index: 10; display: flex; flex-direction: column; align-items: center; }
+        .vector-rocket { width: 100%; height: auto; filter: drop-shadow(0 0 15px rgba(0,242,255,0.7)); }
+        .jet-flame { width: 16px; height: 40px; background: linear-gradient(to bottom, var(--gold), var(--red), transparent); border-radius: 50%; box-shadow: 0 0 25px var(--red); animation: flameBurn 0.04s infinite alternate; margin-top: -10px; display: none; }
+        @keyframes flameBurn { 0% { transform: scaleY(0.8); } 100% { transform: scaleY(1.2); } }
+        .rocket-shake { animation: violentShake 0.04s infinite alternate; }
+        @keyframes violentShake { 0% { transform: translate(1px, 1px); } 100% { transform: translate(-1px, -1px); } }
+        
+        .mult-v { position: absolute; top: 40px; left: 0; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 35px; font-weight: 900; z-index: 20; text-align: center; text-shadow: 0 0 15px rgba(0,0,0,0.9); }
+        .color-green { color: var(--g) !important; text-shadow: 0 0 15px var(--g) !important; }
+        .color-blue { color: var(--c) !important; text-shadow: 0 0 15px var(--c) !important; }
+        .color-purple { color: #d946ef !important; text-shadow: 0 0 20px #d946ef !important; }
+        .color-danger { color: var(--red) !important; text-shadow: 0 0 15px var(--red) !important; }
+
+        .cockpit-panel { background: rgba(255, 255, 255, 0.01); border-radius: 0 0 20px 20px; padding: 4px 8px; display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 8px; align-items: center; margin-top: 2px; }
+        .side-control { display: flex; flex-direction: column; justify-content: center; gap: 2px; }
+        .side-control span { font-size: 9px; font-weight: 900; color: #cbd5e1; text-align: center; display: block; }
+        .side-btn-row { display: flex; gap: 4px; justify-content: center; align-items: center; }
+        .side-btn-row b { font-size: 12px; color: var(--gold); min-width: 30px; text-align: center; }
+
+        .rocket-status-panel { position: absolute; top: 40%; left: calc(50% - 140px); width: 100%; max-width: 280px; padding: 12px; border-radius: 16px; text-align: center; font-weight: 900; font-size: 18px; z-index: 100; display: none; backdrop-filter: blur(10px); box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+        .panel-winner { background: rgba(57,255,20,0.15); border: 2px solid var(--g); color: var(--g); text-shadow: 0 0 12px var(--g); }
+        .panel-loser { background: rgba(255, 0, 85, 0.15); border: 2px solid var(--red); color: var(--red); text-shadow: 0 0 12px var(--red); }
+
+        .puzzle-container { background: rgba(255,255,255,0.01); border: 1px solid rgba(0, 242, 255, 0.15); border-radius: 20px; padding: 14px; margin-bottom: 15px; text-align: center; }
+        .puzzle-slots { display: flex; justify-content: center; gap: 12px; margin-top: 10px; }
+        .puzzle-piece { width: 80px; height: 45px; border-radius: 8px; background: #040114; border: 2px dashed #222; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; color: #444; }
+        
+        .task-card { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: rgba(255,255,255,0.01); border: 1px solid #111; border-radius: 14px; margin-bottom: 8px; flex-shrink: 0; }
+        .task-left h4 { font-size: 13px; font-weight: 900; color: #fff; }
+        .task-left p { font-size: 10px; color: var(--gold); margin-top: 2px; }
+        .btn-watch { padding: 6px 14px; background: var(--c); border: none; border-radius: 8px; color: #000; font-weight: 900; font-size: 11px; cursor: pointer; }
+
+        .ref-header-info { display: flex; justify-content: space-between; align-items: center; background: rgba(0, 242, 255, 0.05); padding: 12px 15px; border-radius: 16px; border: 1px dashed rgba(0, 242, 255, 0.3); margin-bottom: 15px; }
+        .ref-header-info h4 { font-size: 13px; color: #fff; font-weight: 900; display: flex; align-items: center; gap: 6px; }
+        .ref-header-info span { color: var(--g); font-weight: 900; font-size: 15px; }
+        
+        .ref-list-box { display: flex; flex-direction: column; gap: 6px; }
+        .ref-item-card { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: rgba(255,255,255,0.02); border: 1px solid rgba(0, 242, 255, 0.15); border-radius: 16px; }
+        .ref-item-left b { font-size: 13px; color: #fff; font-weight: 900; display: block; }
+        .ref-item-left span { font-size: 11px; color: var(--g); font-weight: bold; margin-top: 2px; display: block; }
+        .btn-claim-ref { padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 900; cursor: pointer; background: var(--p); border: none; color: white; }
+        .btn-claim-ref:disabled { background: #111 !important; color: #555 !important; border: 1px solid #222; cursor: default; }
+
+        .wallet-row { background: rgba(255,255,255,0.01); border: 1px solid #111; border-radius: 18px; padding: 15px; margin-bottom: 10px; }
+        .wallet-title { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 14px; margin-bottom: 8px; }
+        .wallet-input { width: 100%; height: 44px; background: #000000 !important; border: 2px solid var(--c) !important; border-radius: 10px; color: #ffffff !important; padding: 0 14px; font-size: 13px; font-weight: bold; text-align: left; direction: ltr; box-shadow: 0 0 10px rgba(0,242,255,0.15); }
+
+        nav { height: 70px; background: #02000f; border-top: 1px solid rgba(0, 242, 255, 0.15); display: flex; justify-content: space-around; align-items: center; z-index: 999999 !important; position: relative; }
+        .nav-i { text-align: center; color: #444; font-size: 10px; font-weight: 900; cursor: pointer; list-style: none; }
+        .nav-i.active { color: var(--c); text-shadow: 0 0 10px var(--c); }
+        .nav-i i { font-size: 20px; margin-bottom: 4px; display: block; }
+
+        .mining-circle-mega { width: 135px; height: 135px; background: radial-gradient(circle, #100b3a 0%, #030014 100%); border: 3px solid var(--c); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; box-shadow: 0 0 30px var(--c); cursor: pointer; user-select: none; transition: transform 0.05s ease; }
+        .mining-circle-mega:active { transform: scale(0.95); }
+        .mining-circle-mega span { font-size: 9px; color: var(--g); letter-spacing: 2px; margin-top: -2px; font-weight: 900; }
+        
+        .btn-save-neon { width: 100%; height: 46px; border-radius: 12px; background: linear-gradient(135deg, var(--p), #0f172a); border: 2px solid var(--c); color: var(--c); font-size: 15px; font-weight: 900; box-shadow: 0 0 15px rgba(0,242,255,0.3); margin-top: 15px; cursor: pointer; transition: all 0.2s ease; }
+        
+        .btn-luxury-spin { width: 100%; height: 48px; border-radius: 14px; background: linear-gradient(135deg, var(--g), #064e3b); border: 2px solid var(--g); color: #000; font-size: 16px; font-weight: 900; box-shadow: 0 0 20px rgba(57,255,20,0.4); cursor: pointer; transition: all 0.2s ease; text-shadow: 0 1px 2px rgba(255,255,255,0.3); }
+        .btn-luxury-spin:active { transform: scale(0.98); box-shadow: 0 0 5px var(--g); }
+        .btn-luxury-plus-minus { background: linear-gradient(135deg, #1e1b4b, #090520) !important; border: 2px solid var(--c) !important; border-radius: 8px; color: var(--c) !important; font-weight: 900; cursor: pointer; width: 32px; height: 32px; font-size: 16px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(0,242,255,0.2); }
+        .btn-luxury-plus-minus:active { transform: scale(0.9); border-color: var(--g) !important; color: var(--g) !important; }
+
+        .btn-rocket-neon-launch { width: 100%; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--gold), #78350f); border: 2px solid var(--gold); color: #fff; font-size: 15px; font-weight: 900; box-shadow: 0 0 15px rgba(255,215,0,0.3); cursor: pointer; transition: all 0.2s ease; text-shadow: 0 0 5px #000; }
+        .btn-rocket-neon-launch:active { transform: scale(0.98); box-shadow: 0 0 5px var(--gold); }
+        .btn-rocket-neon-launch:disabled { background: #111 !important; border-color: #222 !important; color: #555 !important; box-shadow: none !important; cursor: default; }
+        
+        .btn-upgrade-hub { width: 100%; height: 55px; border-radius: 20px; background: linear-gradient(135deg, #1e1b4b, #0f172a); border: 2px solid var(--p); color: white; font-size: 15px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 0 15px rgba(124,58,237,0.3); }
+        .btn-upgrade-hub:active { transform: scale(0.98); }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-stats">
+        <div class="stat-v"><span>الرصيد</span> <b id="b-v">0</b></div>
+        <div class="stat-v" style="border-left:1px solid #222; padding-left:10px;"><span>الكروت</span> <b id="c-v">0</b></div>
+    </div>
+    <div class="header-actions">
+        <button class="btn-lang-globe" onclick="window.toggleLanguageDropdown()"><i class="fas fa-globe"></i></button>
+        <button class="btn-connect" id="ton-connect-btn" onclick="window.connectTonWallet()">
+            <i class="fas fa-wallet"></i> <span id="connect-text">ربط المحفظة</span>
+        </button>
+    </div>
+    
+    <div class="lang-dropdown" id="real-lang-dropdown">
+        <div class="dropdown-item" onclick="window.changeLanguageEngine('ar')">🇪🇬 عـربي</div>
+        <div class="dropdown-item" onclick="window.changeLanguageEngine('en')">🇬🇧 English</div>
+    </div>
+</header>
+
+<div class="main-container">
+    
+    <div id="room-mining" class="page-room active">
+        <div class="daily-modal" id="daily-login-hub">
+            <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                <b style="color:var(--gold)">🎁 مكافأة الدخول اليومية</b>
+                <i class="fas fa-times-circle" style="color:var(--red); cursor:pointer;" onclick="window.toggleGiftModal()"></i>
+            </div>
+            <div class="daily-grid" id="daily-days-grid-box"></div>
+        </div>
+
+        <p style="font-size: 11px; color: var(--c); font-weight: 900; margin-bottom: 5px;">🛒 متجر الكروت (عملات / TON):</p>
+        <div class="card-shop-box">
+            <div class="shop-card-item">
+                <h5>2 كارت عادي</h5>
+                <span>25K عملة</span>
+                <button class="btn-buy-card-coin" onclick="window.buyCardsWithCoins(2, 25000)">شراء بالعملة</button>
+                <button class="btn-buy-card-ton" onclick="window.buyCardsWithTon(2, 0.1)">0.1 TON</button>
+            </div>
+            <div class="shop-card-item">
+                <h5>5 كروت</h5>
+                <span>60K عملة</span>
+                <button class="btn-buy-card-coin" onclick="window.buyCardsWithCoins(5, 60000)">شراء بالعملة</button>
+                <button class="btn-buy-card-ton" onclick="window.buyCardsWithTon(5, 0.2)">0.2 TON</button>
+            </div>
+            <div class="shop-card-item">
+                <h5>8 كروت</h5>
+                <span>90K عملة</span>
+                <button class="btn-buy-card-coin" onclick="window.buyCardsWithCoins(8, 90000)">شراء بالعملة</button>
+                <button class="btn-buy-card-ton" onclick="window.buyCardsWithTon(8, 0.3)">0.3 TON</button>
+            </div>
+        </div>
+
+        <div class="clicker-layout">
+            <div class="gift-box-badge" onclick="window.toggleGiftModal()">🎁</div>
+            <div class="mining-circle-mega" onclick="window.tapClickerMega()">FMC<span>MINING</span></div>
+            <div class="energy-box"><i class="fas fa-bolt"></i> <span id="eg-v">500</span> / 500</div>
+            <p style="font-size: 9px; color:#4b5563; margin-top:6px;">النقر اليدوي بالطاقة: سقف <b>25,000 عملة/يوم</b></p>
+        </div>
+        <button class="btn-upgrade-hub" onclick="window.switchMainTab('upgrade-room')">UPGRADE MINING FARMS</button>
+    </div>
+
+    <div id="room-upgrade-room" class="page-room">
+        <div onclick="window.switchMainTab('mining')" style="color:var(--c); font-weight:900; margin-bottom:15px; cursor:pointer;"><i class="fas fa-arrow-right"></i> العودة</div>
+        <h3 style="font-size: 14px; color: var(--gold); margin-bottom: 12px;">تفعيل سرعة التعدين السحابي:</h3>
+        <div class="farm-card-box">
+            <div class="farm-card-mini">
+                <div class="farm-info"><h4>🛸 Cloud System 0.25 TON</h4><p>سرعة التدفق: +15,000 عملة يومياً</p><p style="color:var(--red); font-weight:900;">🎁 +5 Cards Only!</p></div>
+                <button class="btn-buy-ton" id="b-ton0" onclick="window.buyUpgradeWithTon(0, 0.25, 15000, 5)">0.25 TON</button>
+            </div>
+            <div class="farm-card-mini">
+                <div class="farm-info"><h4>🛸 Cloud System 0.50 TON</h4><p>سرعة التدفق: +35,000 عملة يومياً</p><p style="color:var(--red); font-weight:900;">🎁 +15 Cards Only!</p></div>
+                <button class="btn-buy-ton" id="b-ton1" onclick="window.buyUpgradeWithTon(1, 0.50, 35000, 15)">0.50 TON</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="room-games" class="page-room">
+        <h2 class="arcade-headline"><i class="fas fa-store"></i> CYBER CASINO STORE</h2>
+        <div class="arcade-game-card" onclick="window.enterGame('slot')">
+            <div class="arcade-card-top">
+                <div class="arcade-icon-box" style="color: var(--p); background: rgba(188,19,254,0.1);">🎰</div>
+                <div class="arcade-info-text"><h3>YUMMY SLOTS MACHINE</h3><p>اضرب وفجر الـ 9 خطوط والـ Jackpot الكبير!</p></div>
+            </div>
+            <button class="btn-arcade-play">ENTER ARCADE</button>
+        </div>
+        <div class="arcade-game-card" onclick="window.enterGame('greedy')">
+            <div class="arcade-card-top">
+                <div class="arcade-icon-box" style="color: var(--gold); background: rgba(255,215,0,0.1);">👑</div>
+                <div class="arcade-info-text"><h3>FMC LUCKY ARENA</h3><p>النسخة الـ VIP المتطابقة مع التصميم؛ اختيار 6 خانات كحد أقصى، مع سجل النتائج.</p></div>
+            </div>
+            <button class="btn-arcade-play">ENTER ARENA</button>
+        </div>
+        <div class="arcade-game-card" onclick="window.enterGame('rocket')">
+            <div class="arcade-card-top">
+                <div class="arcade-icon-box" style="color: var(--c); background: rgba(0,242,255,0.1);">🚀</div>
+                <div class="arcade-info-text"><h3>ROCKET CRASH RIDE</h3><p>أطلق الصاروخ بالشاشة السينمائية؛ السحب تلقائي والصاروخ يكمل طيرانه دون توقف!</p></div>
+            </div>
+            <button class="btn-arcade-play">LAUNCH MISSION</button>
+        </div>
+    </div>
+
+    <div id="room-game-slot" class="page-room">
+        <div onclick="window.exitToMenu()" style="color:var(--red); font-weight:900; margin-bottom:12px; cursor:pointer;"><i class="fas fa-times-circle"></i> EXIT</div>
+        <div class="slot-housing">
+            <div class="grid-container-relative">
+                <canvas id="slot-canvas"></canvas>
+                <div class="grid-3x3" id="slot-grid-parent">
+                    <div class="grid-cell" id="c0">🍉</div><div class="grid-cell" id="c1">🍋</div><div class="grid-cell" id="c2">🍒</div>
+                    <div class="grid-cell" id="c3">🍎</div><div class="grid-cell" id="c4">🍇</div><div class="grid-cell" id="c5">💎</div>
+                    <div class="grid-cell" id="c6">🍔</div><div class="grid-cell" id="c7">🔔</div><div class="grid-cell" id="c8">🎰</div>
+                </div>
+            </div>
+        </div>
+        <div class="history-bar" id="slot-hist-bar"></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px;">
+            <div class="card" style="display:flex; justify-content:space-between; align-items:center; margin:0; padding:8px; border-color: var(--p);">
+                <span>LINES: <b id="sL-v-internal">9</b></span>
+                <div style="display:flex; gap:3px;">
+                    <button class="btn-luxury-plus-minus" onclick="window.changeLines(-1)">-</button>
+                    <button class="btn-luxury-plus-minus" onclick="window.changeLines(1)">+</button>
+                </div>
+            </div>
+            <div class="card" style="display:flex; justify-content:space-between; align-items:center; margin:0; padding:8px; border-color: var(--p);">
+                <span>BET/LINE: <b id="sB-v-internal">50</b></span>
+                <div style="display:flex; gap:3px;">
+                    <button class="btn-luxury-plus-minus" onclick="window.changeLineBet(-50)">-</button>
+                    <button class="btn-luxury-plus-minus" onclick="window.changeLineBet(50)">+</button>
+                </div>
+            </div>
+        </div>
+        <button id="spin-btn" class="btn-luxury-spin" style="margin-top:10px;" onclick="window.spinSlot()">SPIN</button>
+    </div>
+
+    <div id="room-game-greedy" class="page-room">
+        <div onclick="window.exitToMenu()" style="color:var(--red); font-weight:900; margin-bottom:10px; cursor:pointer;"><i class="fas fa-times-circle"></i> EXIT</div>
+        
+        <div class="lucky-header-grid">
+            <div class="lucky-card-panel" style="border-color:#f59e0b;">
+                <span>TIMER</span>
+                <b id="lucky-timer" style="color:#f59e0b; text-shadow:0 0 10px #f59e0b;">30</b>
+            </div>
+            <div class="lucky-card-panel" style="border-color:var(--c);">
+                <span>WALLET</span>
+                <b id="lucky-wallet-v" style="color:#fff;">0</b>
+            </div>
+            <div class="lucky-card-panel" style="border-color:var(--g);">
+                <span>PROFIT</span>
+                <b id="lucky-profit-v" style="color:var(--g);">0</b>
+            </div>
+        </div>
+
+        <div class="lucky-arena-frame">
+            <div class="lucky-center-disc">
+                <span>FMC<br>LUCKY</span>
+            </div>
+            <div id="lucky-arena-nodes-container" style="position:absolute; inset:0;"></div>
+        </div>
+
+        <div class="lucky-chips-row">
+            <button class="chip-btn" onclick="window.selectLuckyChip(10, this)">10</button>
+            <button class="chip-btn active" onclick="window.selectLuckyChip(100, this)">100</button>
+            <button class="chip-btn" onclick="window.selectLuckyChip(1000, this)">1K</button>
+            <button class="chip-btn" onclick="window.selectLuckyChip(5000, this)">5K</button>
+            <button class="chip-btn" onclick="window.selectLuckyChip(10000, this)">10K</button>
+            <button class="chip-btn custom-type" onclick="window.triggerCustomChipInput(this)">أخرى</button>
+        </div>
+
+        <div class="lucky-input-panel" id="custom-chip-panel">
+            <input type="number" class="lucky-field" id="custom-chip-input" placeholder="المبلغ المخصص">
+            <button class="lucky-field-btn" onclick="window.applyCustomChipBet()">موافق</button>
+        </div>
+
+        <div id="hist" class="history-bar" style="margin-top:auto;"><div class="hist-chip">اضغط على الأطعمة (6 باقصى حد) لبدء الرهان!</div></div>
+    </div>
+
+    <div id="room-game-rocket" class="page-room">
+        <div onclick="window.exitToMenu()" style="color:var(--red); font-weight:900; margin-bottom:4px; cursor:pointer; font-size:12px;"><i class="fas fa-times-circle"></i> EXIT</div>
+        <div class="sky">
+            <div class="cyber-city" id="city"></div>
+            <div class="mult-v color-blue" id="ro-mult">1.00x</div>
+            <div id="rocket-status" class="rocket-status-panel"></div>
+            <div id="rocket-container">
+                <svg class="vector-rocket" viewBox="0 0 64 120" style="width:60px;">
+                    <path d="M12,80 Q2,95 8,110 L18,105 Z" fill="#bc13fe" stroke="#00f2ff" stroke-width="1.5"/>
+                    <path d="M52,80 Q62,95 56,110 L46,105 Z" fill="#bc13fe" stroke="#00f2ff" stroke-width="1.5"/>
+                    <path d="M32,5 Q48,35 48,95 L16,95 Q16,35 32,5 Z" fill="#ffffff" stroke="#00f2ff" stroke-width="2"/>
+                    <circle cx="32" cy="45" r="8" fill="#00f2ff"/>
+                </svg>
+                <div class="jet-flame" id="rocket-flame"></div>
+            </div>
+        </div>
+        <div class="history-bar" id="rocket-hist-bar"></div>
+        
+        <div class="cockpit-panel">
+            <div class="side-control">
+                <span>BET AMOUNT</span>
+                <div class="side-btn-row">
+                    <button class="btn-luxury-plus-minus" onclick="window.changeRocketBet(-100)">-</button>
+                    <b id="rB-v">100</b>
+                    <button class="btn-luxury-plus-minus" onclick="window.changeRocketBet(100)">+</button>
+                </div>
+            </div>
+            <button id="rock-btn" class="btn-rocket-neon-launch" onclick="window.launchRocket()">LAUNCH</button>
+            <div class="side-control">
+                <span>AUTO TARGET</span>
+                <div class="side-btn-row">
+                    <button class="btn-luxury-plus-minus" onclick="window.changeRocketMult(-0.5)">-</button>
+                    <b id="rX-v">2.0x</b>
+                    <button class="btn-luxury-plus-minus" onclick="window.changeRocketMult(0.5)">+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="room-referral" class="page-room">
+        <div class="ref-header-info">
+            <h4><i class="fas fa-users" style="color:var(--c)"></i> <span>إجمالي إحالاتك الحقيقية:</span></h4>
+            <span id="ref-total-count-v">8 إحالات</span>
+        </div>
+        <h3 style="font-size: 14px; color: var(--c); margin-bottom: 12px;">سلم مكافآت الإحالة المتدرج (Milestones):</h3>
+        <div id="ref-list-container" class="ref-list-box"></div>
+    </div>
+
+    <div id="room-tasks" class="page-room">
+        <div class="puzzle-container">
+            <p style="font-size:12px; font-weight:900; color:var(--c);">🧩 شريط تجميع قطع الكارت (3 مهام = 1 كارت كامل)</p>
+            <div class="puzzle-slots"><div class="puzzle-piece" id="p-piece0">القطعة 1</div><div class="puzzle-piece" id="p-piece1">القطعة 2</div><div class="puzzle-piece" id="p-piece2">القطعة 3</div></div>
+        </div>
+        <h3 style="font-size: 14px; color: #fff; margin-bottom: 10px;">شاهد الإعلانات واكسب الجوائز (50 مهمة):</h3>
+        <div id="tasks-list-container"></div>
+    </div>
+
+    <div id="room-wallet" class="page-room">
+        <h3 style="font-size: 14px; color: var(--gold); margin-bottom: 15px;">📥 إعدادات محافظ السحب وعناوين الدفع FMC:</h3>
+        <div class="wallet-row"><div class="wallet-title" style="color: #0088cc;">💎 TON Wallet Address</div><input type="text" class="wallet-input" placeholder="UQ..." id="w-ton"></div>
+        <div class="wallet-row"><div class="wallet-title" style="color: #cbd5e1;">🖤 OKX Address</div><input type="text" class="wallet-input" placeholder="0x..." id="w-okx"></div>
+        <div class="wallet-row"><div class="wallet-title" style="color: #f3ba2f;">💛 Binance Pay ID</div><input type="text" class="wallet-input" placeholder="Pay ID..." id="w-binance"></div>
+        <button class="btn-save-neon" onclick="alert('تم حفظ العناوين بنجاح!')">حفظ العناوين</button>
+    </div>
+
+</div>
+
+<nav id="real-bottom-nav">
+    <div class="nav-i active" id="nv-mining" onclick="window.switchMainTab('mining')"><i class="fas fa-hammer"></i><span>MINING</span></div>
+    <div class="nav-i" id="nv-games" onclick="window.switchMainTab('games')"><i class="fas fa-gamepad"></i><span>GAMES</span></div>
+    <div class="nav-i" id="nv-tasks" onclick="window.switchMainTab('tasks')"><i class="fas fa-tv"></i><span>TASKS</span></div>
+    <div class="nav-i" id="nv-referral" onclick="window.switchMainTab('referral')"><i class="fas fa-user-plus"></i><span>REFERRAL</span></div>
+    <div class="nav-i" id="nv-wallet" onclick="window.switchMainTab('wallet')"><i class="fas fa-wallet"></i><span>WALLET</span></div>
+</nav>
+
+<script>
+    // تثبيت المتغيرات العامة في window لمنع أي خطأ في CodePen
+    window.fmc_lang = 'ar';
+    window.fmc_balance = 205100;
+    window.fmc_cards = 50;
+    window.fmc_profit = 0;
+
+    window.slotLinesActive = 9;
+    window.slotLineBetAmount = 50;
+    window.rocketBetAmount = 100;
+    window.rocketTargetMultiplier = 2.0;
+    
+    // إعدادات الـ VIP FMC LUCKY 
+    window.luckyChipSelection = 100;
+    window.luckyTimerCountdown = 30;
+    window.luckyLivePicks = {};
+    window.isLuckyWheelDrawing = false;
+    window.luckyClockToken = null;
+
+    window.isSlotSpinningActive = false;
+    window.isRocketFlyingActive = false;
+    window.currentEnergy = 500;
+    window.isWalletConnected = false;
+    
+    let dailyRewards = [100, 200, 300, 400, 500, 1000, 2500];
+    let refMilestones = [
+        {count:3, reward:5}, {count:5, reward:10}, {count:7, reward:15}, {count:10, reward:20}
+    ];
+    window.fakeUserTotalRefs = 8;
+
+    const icons = ['🍉','🍋','🍒','🍎','🍇','💎','🍔','🔔','🎰'];
+    
+    // 👑 مصفوفة الأطعمة المحدثة بنسب فوز فريدة لمنع التكرار (من 25x لـ 2x)
+    window.luckyItemsConfig = [
+        { icon: '🐔', mult: 25, degree: -90 },
+        { icon: '🐄', mult: 20, degree: -45 },
+        { icon: '🍤', mult: 15, degree: 0 },
+        { icon: '🐟', mult: 10, degree: 45 },
+        { icon: '🌶️', mult: 8, degree: 90 },
+        { icon: '🍅', mult: 5, degree: 135 },
+        { icon: '🥦', mult: 3, degree: 180 },
+        { icon: '🥕', mult: 2, degree: 225 }
+    ];
+
+    const payTable = { '💎': 15, '🎰': 12, '🔔': 8, '🍒': 5, '🍎': 4, '🍇': 3, '🍋': 2, '🍉': 1, '🍔': 1 };
+    const lineColors = ['#ff0055', '#00f2ff', '#39ff14', '#ffd700', '#bc13fe', '#ff5722', '#e91e63', '#9c27b0', '#03a9f4'];
+    const paylinesConfig = [
+        { name: "H1", cells: [0, 1, 2] }, { name: "H2", cells: [3, 4, 5] }, { name: "H3", cells: [6, 7, 8] },
+        { name: "V1", cells: [0, 3, 6] }, { name: "V2", cells: [1, 4, 7] }, { name: "V3", cells: [2, 5, 8] },
+        { name: "D1", cells: [0, 4, 8] }, { name: "D2", cells: [6, 4, 2] }, { name: "Z1", cells: [3, 1, 5] }
+    ];
+
+    window.toggleLanguageDropdown = function() {
+        const drop = document.getElementById('real-lang-dropdown');
+        if(drop) drop.style.display = (drop.style.display === 'flex') ? 'none' : 'flex';
+    };
+
+    window.toggleGiftModal = function() { 
+        let m = document.getElementById('daily-login-hub'); 
+        if(m) m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; 
+    };
+
+    window.connectTonWallet = function() {
+        window.isWalletConnected = !window.isWalletConnected; const btn = document.getElementById('ton-connect-btn'); const txt = document.getElementById('connect-text');
+        if(window.isWalletConnected) { btn.classList.add('connected'); txt.innerText = "تم الـربط ✔"; } else { txt.innerText = "ربط المحفظة"; btn.classList.remove('connected'); }
+    };
+
+    window.buyUpgradeWithTon = function(idx, tonCost, speedPerSecond, cardBonus) {
+        if(!window.isWalletConnected) { alert('من فضلك ربط المحفظة أولاً!'); return; }
+        window.fmc_cards += cardBonus; window.updateUI();
+    };
+
+    window.buyCardsWithCoins = function(amount, cost) { if (window.fmc_balance < cost) { alert('رصيدك غير كافي!'); return; } window.fmc_balance -= cost; window.fmc_cards += amount; window.updateUI(); };
+    window.buyCardsWithTon = function(amount, tonCost) { if (!window.isWalletConnected) { alert('من فضلك ربط محفظة الـ TON أولاً!'); return; } window.fmc_cards += amount; window.updateUI(); };
+
+    window.tapClickerMega = function() { if(window.currentEnergy >= 1) { window.currentEnergy--; window.fmc_balance += 10; window.updateUI(); } };
+
+    window.changeLanguageEngine = function(langCode) { window.fmc_lang = langCode; window.toggleLanguageDropdown(); window.updateUI(); };
+
+    window.switchMainTab = function(tab) {
+        document.querySelectorAll('.page-room').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-i').forEach(n => n.classList.remove('active'));
+        
+        let targetRoom = document.getElementById('room-' + tab); if(targetRoom) targetRoom.classList.add('active');
+        let targetNav = document.getElementById('nv-' + tab); if(targetNav) targetNav.classList.add('active');
+        
+        if(tab==='referral') window.buildReferralList();
+        if(tab==='tasks') window.buildTasksList();
+    };
+
+    window.changeLines = function(v) { window.slotLinesActive = Math.max(1, Math.min(9, window.slotLinesActive + v)); window.updateUI(); drawStaticPaylinesPreview(); };
+    window.changeLineBet = function(v) { window.slotLineBetAmount = Math.max(50, Math.min(100000, window.slotLineBetAmount + v)); window.updateUI(); };
+    window.changeRocketBet = function(v) { window.rocketBetAmount = Math.max(100, Math.min(50000, window.rocketBetAmount + v)); window.updateUI(); };
+    window.changeRocketMult = function(v) { window.rocketTargetMultiplier = Math.max(1.5, Math.min(50.0, window.rocketTargetMultiplier + v)); window.updateUI(); };
+
+    window.enterGame = function(game) { 
+        document.querySelectorAll('.page-room').forEach(p => p.classList.remove('active')); 
+        let rG = document.getElementById('room-game-' + game); if(rG) rG.classList.add('active'); 
+        if(game=='slot') { initSlots(); setTimeout(drawStaticPaylinesPreview, 200); } 
+        if(game=='greedy') window.bootLuckyArenaEngine(); 
+    };
+    
+    window.exitToMenu = function() { window.switchMainTab('games'); };
+
+    function initSlots() { for(let i=0; i<9; i++) { let cell = document.getElementById('c' + i); if(cell) cell.innerText = icons[Math.floor(Math.random()*icons.length)]; } window.updateUI(); }
+
+    window.buildReferralList = function() {
+        const container = document.getElementById('ref-list-container'); if(!container) return; container.innerHTML = '';
+        refMilestones.forEach((m) => {
+            const item = document.createElement('div'); item.className = 'ref-item-card';
+            item.innerHTML = `<div class="ref-item-left"><b>باقة الـ ${m.count} إحالات حقيقية</b><span>المكافأة: +${m.reward} كارت</span></div><button class="btn-claim-ref" disabled>قفل 🔒</button>`;
+            container.appendChild(item);
+        });
+    };
+
+    window.buildTasksList = function() {
+        const container = document.getElementById('tasks-list-container'); if(!container) return; container.innerHTML = '';
+        for (let i = 1; i <= 6; i++) {
+            const card = document.createElement('div'); card.className = 'task-card';
+            card.innerHTML = `<div class="task-left"><h4>مهمة مشاهدة إعلان رقم #${i}</h4><p>+500 FMC</p></div><button class="btn-watch" id="tk-btn-${i}" onclick="window.watchAdTask(${i})">شاهد الآن</button>`;
+            container.appendChild(card);
+        }
+    };
+    window.watchAdTask = function(taskNum) { const btn = document.getElementById('tk-btn-' + taskNum); btn.innerText = "..."; setTimeout(() => { btn.innerText = "تم ✔"; btn.disabled = true; window.fmc_balance += 500; window.updateUI(); }, 1000); };
+
+    window.updateUI = function() {
+        document.getElementById('b-v').innerText = window.fmc_balance.toLocaleString();
+        document.getElementById('c-v').innerText = window.fmc_cards.toLocaleString();
+        document.getElementById('eg-v').innerText = window.currentEnergy;
+        
+        if(document.getElementById('sL-v-internal')) document.getElementById('sL-v-internal').innerText = window.slotLinesActive;
+        if(document.getElementById('sB-v-internal')) document.getElementById('sB-v-internal').innerText = window.slotLineBetAmount;
+        if(document.getElementById('lbl-total-bet-cost')) document.getElementById('lbl-total-bet-cost').innerText = (window.slotLinesActive * window.slotLineBetAmount).toLocaleString();
+        
+        if(document.getElementById('rB-v')) document.getElementById('rB-v').innerText = window.rocketBetAmount;
+        if(document.getElementById('rX-v')) document.getElementById('rX-v').innerText = window.rocketTargetMultiplier.toFixed(1) + 'x';
+
+        if(document.getElementById('lucky-wallet-v')) document.getElementById('lucky-wallet-v').innerText = window.fmc_balance.toLocaleString();
+        if(document.getElementById('lucky-profit-v')) document.getElementById('lucky-profit-v').innerText = window.fmc_profit.toLocaleString();
+    };
+
+    // --- لعبة الـ Slots ---
+    window.spinSlot = function() {
+        let totalCost = window.slotLinesActive * window.slotLineBetAmount; if(window.isSlotSpinningActive || window.fmc_balance < totalCost) return;
+        window.isSlotSpinningActive = true; window.fmc_balance -= totalCost; window.updateUI(); document.getElementById('spin-btn').disabled = true;
+        const canvas = document.getElementById('slot-canvas'); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        let finalGrid = Array(9).fill(null);
+        for(let i=0; i<9; i++) { finalGrid[i] = icons[Math.floor(Math.random()*icons.length)]; }
+        
+        let rollCounter = 0;
+        let rollInterval = setInterval(() => {
+            for(let i=0; i<9; i++) { let cell = document.getElementById('c' + i); if(cell) { cell.classList.add('blur-spin'); cell.innerText = icons[Math.floor(Math.random() * icons.length)]; } }
+            rollCounter++;
+            if(rollCounter >= 10) { 
+                clearInterval(rollInterval); 
+                for(let i=0; i<9; i++) { let cell = document.getElementById('c' + i); if(cell) { cell.classList.remove('blur-spin'); cell.innerText = finalGrid[i]; } } 
+                window.isSlotSpinningActive = false; document.getElementById('spin-btn').disabled = false; 
+                evaluate3x3Wins(finalGrid); 
+            }
+        }, 80);
+    };
+
+    function evaluate3x3Wins(grid) {
+        let currentWinAmount = 0; let activeWinningLines = [];
+        for(let i=0; i<window.slotLinesActive; i++) { let line = paylinesConfig[i]; if(grid[line.cells[0]] === grid[line.cells[1]] && grid[line.cells[1]] === grid[line.cells[2]]) { currentWinAmount += Math.floor(window.slotLineBetAmount * (payTable[grid[line.cells[0]]] || 1)); activeWinningLines.push(i); } }
+        if (currentWinAmount > 0) { window.fmc_balance += currentWinAmount; drawNeonPaylines(activeWinningLines); }
+        const histBar = document.getElementById('slot-hist-bar'); const chip = document.createElement('div'); chip.className = currentWinAmount > 0 ? "hist-chip win" : "hist-chip"; chip.innerText = currentWinAmount > 0 ? `🎰 فوز خطوط +${currentWinAmount}` : `❌ بدون فوز`;
+        if(histBar) { histBar.prepend(chip); if(histBar.children.length > 4) histBar.removeChild(histBar.lastChild); } window.updateUI();
+    }
+
+    function drawNeonPaylines(linesArray) {
+        const c = document.getElementById('slot-canvas'); if(!c) return; const ctx = c.getContext('2d'); const gridParent = document.getElementById('slot-grid-parent'); if(!gridParent) return;
+        c.width = gridParent.clientWidth; c.heig
